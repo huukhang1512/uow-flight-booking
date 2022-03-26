@@ -1,9 +1,22 @@
-# Welcome to your CDK TypeScript project
-
-This is a blank project for TypeScript development with CDK.
+# Welcome to the UOW Flight Booking CDK Backend
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
+## How to setup the project for local
+1. Clone this repository
+> git clone git@github.com:huukhang1512/uow-flight-booking.git
+
+2. Make sure that you have configure your AWS account on your local machine, if not, use this command:
+> aws configure
+
+3. Install the dependencies
+> npm install
+
+4. Boostrap the CDK stack
+> cdk bootstrap
+
+5. Deploy the stack
+> cdk deploy
 ## Useful commands
 
 * `npm run build`   compile typescript to js
