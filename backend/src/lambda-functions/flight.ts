@@ -1,8 +1,8 @@
 import {APIGatewayProxyEventV2, APIGatewayProxyResultV2} from 'aws-lambda';
 
-export async function getFlights(
+export const getFlights = async (
   event: APIGatewayProxyEventV2,
-): Promise<APIGatewayProxyResultV2> {
+): Promise<APIGatewayProxyResultV2> => {
   console.log('event', event);
 
   return {
