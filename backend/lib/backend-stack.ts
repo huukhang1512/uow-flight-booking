@@ -16,7 +16,7 @@ export class BackendStack extends Stack {
         entry: path.join(__dirname, `/../src/lambda-functions/flight.ts`)
     });
 
-    const api = new apigateway.RestApi(this, 'flight', {
+    const api = new apigateway.RestApi(this, '/flight', {
       restApiName: "Lambda Flight API",
       description: "This is a CRUD API for flight"
     }) 
@@ -24,6 +24,7 @@ export class BackendStack extends Stack {
     const getListOfFlightAPI = new apigateway.LambdaIntegration(getListOfFlightBooking, {
       requestTemplates: { "application/json": '{ "statusCode": "200" }' }
     })
+    api.root.addResource('flight');
     api.root.addMethod("GET", getListOfFlightAPI);
   }
 }
