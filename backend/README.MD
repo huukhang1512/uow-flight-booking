@@ -17,10 +17,6 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 5. Deploy the stack
 > cdk deploy
-
-To run the API locally, bootstrap the stack and then run the following commands:
->sam local start-api -t ./cdk.out/<stackName>.template.json [OPTIONS]
-
 ## Useful commands
 
 * `npm run build`   compile typescript to js

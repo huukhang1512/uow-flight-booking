@@ -49,6 +49,3 @@ yarn-error.log
 
 /.versionrc.json
 RELEASE_NOTES.md
-
-.env.development.local
-.env.development
