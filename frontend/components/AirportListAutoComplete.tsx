@@ -6,16 +6,6 @@ import { useState } from 'react';
 
 export const AirportListAutoComplete = () => {
   const [airports, setAirports] = useState<AirPort[]>([]);
-  const getAirports = async () => {
-    const { data } = await axios.get('https://localhost:3001/airports', {
-        params: {
-            queryStringParameters: {
-                searchQuery
-            }
-        }
-    });
-    setAirports(data);
-  };
   return (
     <TextField
       variant="filled"
