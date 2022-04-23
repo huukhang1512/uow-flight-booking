@@ -1,5 +1,10 @@
 const SelectFlight = () => {
-  return <div></div>;
+  
+  return (
+    <div>
+    
+    </div>
+  );
 };
 
 export default SelectFlight;
