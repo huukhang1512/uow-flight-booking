@@ -32,7 +32,6 @@ const Home: NextPage = () => {
           minHeight: '45vh',
           position: 'relative',
           display: 'flex',
-          flexDirection: 'columnn',
           alignItems: 'center',
           justifyContent: 'flex-end',
         }}
@@ -69,7 +68,7 @@ const Home: NextPage = () => {
         <Box
           sx={{
             position: 'absolute',
-            width: '60vw',
+            width: '70vw',
             color: '#F5F5F5',
             borderRadius: '2em',
             padding: '2em 3em',
