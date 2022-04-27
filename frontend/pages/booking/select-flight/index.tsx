@@ -16,14 +16,14 @@ const SelectFlight = () => {
   return (
     <Container
       sx={{
-        flexDirection:'column',
+        flexDirection: 'column',
         padding: 3,
         minHeight: '90vh',
         alignItems: 'center',
         justifyContent: 'flex-start',
         direction: 'column',
         display: 'flex',
-        gap: 4
+        gap: 4,
       }}
       maxWidth="lg"
     >
@@ -75,8 +75,9 @@ const SelectFlight = () => {
           <IconButton>
             <ArrowBack />
           </IconButton>
-          {days.map((day) => (
+          {days.map((day, i) => (
             <Button
+              key={i}
               variant="contained"
               fullWidth
               style={{
