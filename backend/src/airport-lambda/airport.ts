@@ -19,4 +19,16 @@ export const getAirports = async (
   };
 };
 
-module.exports = { getAirports };
+export const getAirportById = async (
+  event: APIGatewayProxyEventV2
+): Promise<APIGatewayProxyResultV2> => {
+  const params = event['pathParameters'];
+  const id = params?.id;
+  const airport = airportsList.find((airport) => airport.id === id);
+  return {
+    body: JSON.stringify(airport),
+    statusCode: 200,
+  };
+}
+
+module.exports = { getAirports, getAirportById };

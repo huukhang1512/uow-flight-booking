@@ -2,6 +2,7 @@ import { AirPort } from "../interfaces/airport.interface";
 
 export const airportsList: AirPort[] = [
   {
+    id: 1,
     name: "MEL",
     city: {
       name: "Melbourne",
@@ -11,6 +12,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 2,
     name: "SYD",
     city: {
       name: "Sydney",
@@ -20,6 +22,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 3,
     name: "ADL",
     city: {
       name: "Adelaide",
@@ -29,6 +32,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 4,
     name: "BNK",
     city: {
       name: "Ballina Byron",
@@ -38,6 +42,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 5,
     name: "BNE",
     city: {
       name: "Brisbane",
@@ -47,6 +52,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 6,
     name: "CNS",
     city: {
       name: "Cairns",
@@ -56,6 +62,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 7,
     name: "CBR",
     city: {
       name: "Canberra",
@@ -65,6 +72,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 8,
     name: "OOL",
     city: {
       name: "Gold Coast",
@@ -74,6 +82,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 10,
     name: "HCMC",
     city: {
       name: "Ho Chi Minh City",
@@ -83,15 +92,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
-    name: "HCMC",
-    city: {
-      name: "Ho Chi Minh City",
-      country: {
-        countryName: "Vietnam",
-      },
-    },
-  },
-  {
+    id: 11,
     name: "HN",
     city: {
       name: "Ha Noi",
@@ -101,6 +102,7 @@ export const airportsList: AirPort[] = [
     },
   },
   {
+    id: 12,
     name: "DN",
     city: {
       name: "Da Nang",

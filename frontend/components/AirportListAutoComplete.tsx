@@ -1,26 +1,45 @@
 import { AirPort } from '@/interfaces/airport';
-import { FlightTakeoff } from '@mui/icons-material';
-import { InputAdornment, TextField } from '@mui/material';
-import axios from 'axios';
-import { useState } from 'react';
+import { FlightLand, FlightTakeoff } from '@mui/icons-material';
+import { Autocomplete, InputAdornment, TextField } from '@mui/material';
+import React from 'react';
+interface AirportListAutoCompleteProps {
+  locationType: 'Departure' | 'Destination';
+  airports: AirPort[];
+  chosenAirport: AirPort | null;
+  disabledOption?: AirPort | null;
+  onChange: (arg: AirPort | null) => void;
+}
 
-export const AirportListAutoComplete = () => {
-  const [airports, setAirports] = useState<AirPort[]>([]);
+export const AirportListAutoComplete = ({
+  onChange,
+  disabledOption,
+  chosenAirport,
+  locationType,
+  airports,
+}: AirportListAutoCompleteProps) => {
   return (
-    <TextField
-      variant="filled"
+    <Autocomplete
+      options={airports}
+      value={chosenAirport}
+      onChange={(_, newValue) => {
+        onChange(newValue);
+      }}
+      getOptionDisabled={(option) =>
+        option === disabledOption
+      }
+      getOptionLabel={(option) => `${option.city.name} - ${option.name}`}
       fullWidth
-      sx={{
-        backgroundColor: '#F5F5F5',
-      }}
-      InputProps={{
-        endAdornment: (
-          <InputAdornment position="end">
-            <FlightTakeoff />
-          </InputAdornment>
-        ),
-      }}
-      label="Departure"
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          variant="filled"
+          fullWidth
+          sx={{
+            backgroundColor: '#F5F5F5',
+          }}
+          label={locationType}
+        />
+      )}
     />
   );
 };
