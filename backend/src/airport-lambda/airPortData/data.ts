@@ -83,7 +83,7 @@ export const airportsList: AirPort[] = [
   },
   {
     id: 10,
-    name: "HCMC",
+    name: "SGN",
     city: {
       name: "Ho Chi Minh City",
       country: {
@@ -93,7 +93,7 @@ export const airportsList: AirPort[] = [
   },
   {
     id: 11,
-    name: "HN",
+    name: "HAN",
     city: {
       name: "Ha Noi",
       country: {
@@ -103,7 +103,7 @@ export const airportsList: AirPort[] = [
   },
   {
     id: 12,
-    name: "DN",
+    name: "DAD",
     city: {
       name: "Da Nang",
       country: {

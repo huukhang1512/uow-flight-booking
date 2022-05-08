@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import type { NextPage } from 'next';
+import type { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import { useState } from 'react';
@@ -206,11 +206,11 @@ const Home: NextPage<HomePageProps> = ({ ...props }) => {
   );
 };
 
-export const getServerSideProps = async () => {
+export const getServerSideProps:GetServerSideProps = async () => {
   const res = await axios.get(
     `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport`
   );
-  const airports = await res.data;
+  const airports = res.data;
   return {
     props: {
       airports,

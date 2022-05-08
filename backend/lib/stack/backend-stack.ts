@@ -34,6 +34,11 @@ export class BackendStack extends Stack {
 
     database.allowInboundAccess(application.lambdaSecurityGroup);
 
+    const airportApi = new apigateway.RestApi(this, 'airport', {
+      restApiName: "Airport API",
+      description: "This is an API to get the list of airport"
+    }) 
+
     const searchForAirport = new NodejsFunction(this,
       'SearchForAirport', {
         runtime: lambda.Runtime.NODEJS_14_X,    // execution environment
@@ -41,17 +46,26 @@ export class BackendStack extends Stack {
         entry: path.join(__dirname, `../../src/airport-lambda/airport.ts`)
     });
 
-    const airportApi = new apigateway.RestApi(this, 'airport', {
-      restApiName: "Airport API",
-      description: "This is an API to get the list of airport"
-    }) 
+    const searchForAirportById = new NodejsFunction(this,
+      'SearchForAirportById', {
+        runtime: lambda.Runtime.NODEJS_14_X,    // execution environment
+        handler: 'getAirportById',
+        entry: path.join(__dirname, `../../src/airport-lambda/airport.ts`)
+    });
 
     const searchForAirportApi = new apigateway.LambdaIntegration(searchForAirport, {
       requestTemplates: { "application/json": '{ "statusCode": "200" }' }
     })
-    const airport = airportApi.root.addResource('airport');
-    airport.addMethod("GET", searchForAirportApi);
 
+
+    const searchForAirportByIdApi = new apigateway.LambdaIntegration(searchForAirportById, {
+      requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+    })
+
+    const airport = airportApi.root.addResource('airport');
+    const airportWithId = airport.addResource('{id}');
+    airport.addMethod("GET", searchForAirportApi);
+    airportWithId.addMethod("GET",searchForAirportByIdApi)
 
     const getListOfFlightBooking = new NodejsFunction(this,
       'GetListOfFlightBooking', {

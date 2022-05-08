@@ -22,13 +22,15 @@ export const getAirports = async (
 export const getAirportById = async (
   event: APIGatewayProxyEventV2
 ): Promise<APIGatewayProxyResultV2> => {
-  const params = event['pathParameters'];
+  const params = event["pathParameters"];
   const id = params?.id;
-  const airport = airportsList.find((airport) => airport.id === id);
   return {
-    body: JSON.stringify(airport),
+    body: JSON.stringify(
+      airportsList.find((airport) => airport.id === parseInt(id || "")) ??
+        `Cannot found matching airport match ${id}`
+    ),
     statusCode: 200,
   };
-}
+};
 
 module.exports = { getAirports, getAirportById };

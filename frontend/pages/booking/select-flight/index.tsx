@@ -10,8 +10,15 @@ import {
   Typography,
 } from '@mui/material';
 import { ArrowBack, ArrowForward, Flight } from '@mui/icons-material';
+import axios from 'axios';
+import { GetServerSideProps, NextPage } from 'next';
+import { AirPort } from '@/interfaces/airport';
 
-const SelectFlight = () => {
+interface SelectFlightProps {
+  departure: AirPort;
+  destination: AirPort;
+}
+const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return (
     <Container
@@ -29,7 +36,7 @@ const SelectFlight = () => {
     >
       <BookingStepper step={0} />
       <Typography variant={'h1'} fontWeight={'medium'} sx={{ fontSize: '3em' }}>
-        Sydney To Ho Chi Minh City
+        {props.departure.city.name} To {props.destination.city.name}
       </Typography>
       <Typography variant={'subtitle1'}>
         The fares include 7kg carry-on baggage. You can buy more in the next
@@ -56,7 +63,7 @@ const SelectFlight = () => {
             }}
           />
           <Typography variant={'body1'}>
-            Sydney to Ho Chi Minh City - Thursday 8 December 2022
+            {props.departure.city.name} to {props.destination.city.name} -
           </Typography>
         </Stack>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -115,7 +122,9 @@ const SelectFlight = () => {
           >
             <Box>
               <Typography variant="h4">6:50am</Typography>
-              <Typography variant="subtitle2">SYD - Departure</Typography>
+              <Typography variant="subtitle2">
+                {props.departure.id} - Departure
+              </Typography>
             </Box>
             <Box>
               <Flight
@@ -126,7 +135,9 @@ const SelectFlight = () => {
             </Box>
             <Box>
               <Typography variant="h4">6:50am</Typography>
-              <Typography variant="subtitle2">HCMC - Arival</Typography>
+              <Typography variant="subtitle2">
+                {props.destination.id} - Arival
+              </Typography>
             </Box>
             <Box>
               <Typography variant="subtitle2">Direct Flight</Typography>
@@ -141,6 +152,24 @@ const SelectFlight = () => {
       </Stack>
     </Container>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const allPromises = Promise.all([
+    await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport/${query.departure}`
+    ),
+    await axios.get(
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport/${query.arrival}`
+    ),
+  ]);
+  const res = await allPromises;
+  return {
+    props: {
+      departure: res[0].data,
+      destination: res[1].data,
+    },
+  };
 };
 
 export default SelectFlight;
