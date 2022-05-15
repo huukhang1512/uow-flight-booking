@@ -9,17 +9,20 @@ import {
   Tabs,
   Typography,
 } from '@mui/material';
-import { ArrowBack, ArrowForward, Flight } from '@mui/icons-material';
+import { Flight as FlightIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { AirPort } from '@/interfaces/airport';
+import React, { useEffect, useState } from 'react';
+import { Flight } from '@/interfaces/flight';
 
 interface SelectFlightProps {
   departure: AirPort;
   destination: AirPort;
+  departureDate: string;
+  flightList: Flight[];
 }
 const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   return (
     <Container
       sx={{
@@ -56,14 +59,17 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
           Departing Flight
         </Typography>
         <Stack spacing={1} alignItems={'center'} direction="row" width={'100%'}>
-          <Flight
+          <FlightIcon
             style={{
               color: '#4066B0',
               transform: 'rotate(90deg)',
             }}
           />
           <Typography variant={'body1'}>
-            {props.departure.city.name} to {props.destination.city.name} -
+            {props.departure.city.name} to {props.destination.city.name} -{' '}
+            Flight available at{' '}
+            {('0' + (new Date(props.departureDate).getMonth() + 1)).slice(-2)}/
+            {new Date(props.departureDate).getFullYear()}
           </Typography>
         </Stack>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -73,87 +79,94 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
             <Tab label="First Class" disabled />
           </Tabs>
         </Box>
-        <Stack
-          direction="row"
-          spacing={2}
-          alignItems={'center'}
-          justifyContent={'center'}
-        >
-          <IconButton>
-            <ArrowBack />
-          </IconButton>
-          {days.map((day, i) => (
-            <Button
-              key={i}
-              variant="contained"
-              fullWidth
-              style={{
-                backgroundColor: '#FAFAFA',
-              }}
-            >
-              <Stack>
-                <Typography color="#4066B0">{day}</Typography>
-                <Typography color="#FD7E14" variant="h5">
-                  $480
-                </Typography>
-              </Stack>
-            </Button>
-          ))}
-          <IconButton>
-            <ArrowForward />
-          </IconButton>
-        </Stack>
-        <Typography variant={'h6'}>Thursday 8 December 2022</Typography>
-        <Button
-          variant="contained"
-          fullWidth
-          style={{
-            color: '#555555',
-            backgroundColor: '#FAFAFA',
-          }}
-        >
-          <Stack
-            direction="row"
-            justifyContent={'space-between'}
-            alignItems={'center'}
-            padding={3}
-            width="100%"
-            borderRadius={'0.5em'}
-          >
-            <Box>
-              <Typography variant="h4">6:50am</Typography>
-              <Typography variant="subtitle2">
-                {props.departure.id} - Departure
-              </Typography>
-            </Box>
-            <Box>
-              <Flight
+        {props.flightList.length == 0 ? (
+          <Typography>No flight found this month!</Typography>
+        ) : (
+          props.flightList.map((flight, i) => (
+            <React.Fragment key={i}>
+              <Button
+                variant="contained"
+                fullWidth
                 style={{
-                  transform: 'rotate(90deg)',
+                  color: '#555555',
+                  backgroundColor: '#FAFAFA',
                 }}
-              />
-            </Box>
-            <Box>
-              <Typography variant="h4">6:50am</Typography>
-              <Typography variant="subtitle2">
-                {props.destination.id} - Arival
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="subtitle2">Direct Flight</Typography>
-            </Box>
-            <Box>
-              <Typography variant="h5" color="#FD7E14">
-                $480.00
-              </Typography>
-            </Box>
-          </Stack>
-        </Button>
+              >
+                <Stack width="100%" alignItems={'flex-start'}>
+                  <Typography>
+                    {new Date(flight.depart_date).toLocaleDateString()}
+                  </Typography>
+                  <Stack
+                    direction="row"
+                    justifyContent={'space-between'}
+                    alignItems={'center'}
+                    padding={3}
+                    width="100%"
+                    borderRadius={'0.5em'}
+                  >
+                    <Box>
+                      <Typography variant="h4">
+                        {new Date(flight.depart_date).toLocaleTimeString()}
+                      </Typography>
+                      <Typography variant="subtitle2">
+                        {props.departure.name} - Departure
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <FlightIcon
+                        style={{
+                          transform: 'rotate(90deg)',
+                        }}
+                      />
+                    </Box>
+                    <Box>
+                      <Typography variant="h4">
+                        {new Date(flight.arrival_date).toLocaleTimeString()}
+                      </Typography>
+                      <Typography variant="subtitle2">
+                        {props.destination.name} - Arival
+                      </Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="subtitle2">Direct Flight</Typography>
+                    </Box>
+                    <Box>
+                      <Typography variant="h5" color="#FD7E14">
+                        AUD ${flight.price}
+                      </Typography>
+                    </Box>
+                  </Stack>
+                </Stack>
+              </Button>
+            </React.Fragment>
+          ))
+        )}
       </Stack>
     </Container>
   );
 };
-
+const getFlight = async (
+  departure: AirPort,
+  destination: AirPort,
+  departureDate: string
+) => {
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/flight`,
+      {
+        origin: departure.name,
+        destination: destination.name,
+        depart_date: `${new Date(departureDate).getFullYear()}-${(
+          '0' +
+          (new Date(departureDate).getMonth() + 1)
+        ).slice(-2)}`,
+      }
+    );
+    return res.data;
+  } catch (e) {
+    console.error(e);
+  }
+};
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
   const allPromises = Promise.all([
     await axios.get(
@@ -164,10 +177,17 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
     ),
   ]);
   const res = await allPromises;
+  const flights = await getFlight(
+    res[0].data,
+    res[1].data,
+    `${query.departureDate}`
+  );
   return {
     props: {
       departure: res[0].data,
       destination: res[1].data,
+      departureDate: query.departureDate,
+      flightList: flights.data,
     },
   };
 };
