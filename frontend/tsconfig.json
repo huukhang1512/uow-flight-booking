@@ -12,6 +12,7 @@
       "@/interfaces/*": ["interfaces/*"],
       "@/public/*": ["public/*"],
       "@/components/*": ["components/*"],
+      "@/styles/*": ["styles/*"],
     },
     "esModuleInterop": true,
     "module": "esnext",

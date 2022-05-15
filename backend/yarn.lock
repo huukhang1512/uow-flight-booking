@@ -943,6 +943,13 @@ aws-sdk@^2.814.0:
     uuid "3.3.2"
     xml2js "0.4.19"
 
+aws-ssm@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/aws-ssm/-/aws-ssm-0.4.0.tgz#bef2469b664f94798f42e117bf008e6f1afaf8b5"
+  integrity sha512-+nk+Y44ZtFuKGKCgQZcdaSVxNeyHXq31jwJWJF/mAiQ6GcuRngRYawdcZaTVqEK8u0k8t0qqRRqWezEw2B+tvQ==
+  dependencies:
+    common-types "^1.26.2"
+
 babel-jest@^26.6.3:
   version "26.6.3"
   resolved "https://registry.yarnpkg.com/babel-jest/-/babel-jest-26.6.3.tgz#d87d25cb0037577a0c89f82e5755c5d293c01056"
@@ -1261,6 +1268,11 @@ commander@^3.0.2:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/commander/-/commander-3.0.2.tgz#6837c3fb677ad9933d1cfba42dd14d5117d6b39e"
   integrity sha512-Gar0ASD4BDyKC4hl4DwHqDrmvjoxWKZigVnAbn5H1owvm4CxCPdb0HQDehwNYMJpla5+M2tPmPARzhtYuwpHow==
+
+common-types@^1.26.2:
+  version "1.31.1"
+  resolved "https://registry.yarnpkg.com/common-types/-/common-types-1.31.1.tgz#2cfb4f0b67bce8010e0f13f7fdedcfd7257a429b"
+  integrity sha512-eixAd22Gmek1dgsPgyqCSjzMAlp8rpSLkb44iEMfOzR9fwGFYEkH+AWOHmwSFxWmO8MvMND/m1jpZX0Wk4+yJA==
 
 component-emitter@^1.2.1:
   version "1.3.0"

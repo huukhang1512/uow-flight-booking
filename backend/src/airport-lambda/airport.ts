@@ -19,4 +19,18 @@ export const getAirports = async (
   };
 };
 
-module.exports = { getAirports };
+export const getAirportById = async (
+  event: APIGatewayProxyEventV2
+): Promise<APIGatewayProxyResultV2> => {
+  const params = event["pathParameters"];
+  const id = params?.id;
+  return {
+    body: JSON.stringify(
+      airportsList.find((airport) => airport.id === parseInt(id || "")) ??
+        `Cannot found matching airport match ${id}`
+    ),
+    statusCode: 200,
+  };
+};
+
+module.exports = { getAirports, getAirportById };
