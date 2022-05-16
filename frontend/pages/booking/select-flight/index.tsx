@@ -2,8 +2,6 @@ import { BookingStepper } from '@/components/BookingStepper';
 import {
   Box,
   Button,
-  Container,
-  IconButton,
   Stack,
   Tab,
   Tabs,
@@ -13,30 +11,30 @@ import { Flight as FlightIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
 import { AirPort } from '@/interfaces/airport';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Flight } from '@/interfaces/flight';
-
+import { useSetRecoilState } from 'recoil';
+import { selectedFlight } from 'atoms/selectedFlight';
+import { useRouter } from 'next/router';
+import { BookingContainer } from '@/components/BookingContainer';
 interface SelectFlightProps {
   departure: AirPort;
   destination: AirPort;
   departureDate: string;
   flightList: Flight[];
 }
+
 const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
+  const router = useRouter();
+  const setSelectedFlight = useSetRecoilState(selectedFlight);
+  const chooseFlight = (flight: Flight) => {
+    setSelectedFlight(flight);
+    router.push({
+      pathname: '/booking/select-seat',
+    });
+  };
   return (
-    <Container
-      sx={{
-        flexDirection: 'column',
-        padding: 3,
-        minHeight: '90vh',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        direction: 'column',
-        display: 'flex',
-        gap: 4,
-      }}
-      maxWidth="lg"
-    >
+    <BookingContainer>
       <BookingStepper step={0} />
       <Typography variant={'h1'} fontWeight={'medium'} sx={{ fontSize: '3em' }}>
         {props.departure.city.name} To {props.destination.city.name}
@@ -67,9 +65,7 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
           />
           <Typography variant={'body1'}>
             {props.departure.city.name} to {props.destination.city.name} -{' '}
-            Flight available at{' '}
-            {('0' + (new Date(props.departureDate).getMonth() + 1)).slice(-2)}/
-            {new Date(props.departureDate).getFullYear()}
+            Flight available at {props.departureDate}
           </Typography>
         </Stack>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -87,13 +83,16 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
               <Button
                 variant="contained"
                 fullWidth
+                onClick={() => {
+                  chooseFlight(flight);
+                }}
                 style={{
                   color: '#555555',
                   backgroundColor: '#FAFAFA',
                 }}
               >
                 <Stack width="100%" alignItems={'flex-start'}>
-                  <Typography>
+                  <Typography suppressHydrationWarning>
                     {new Date(flight.depart_date).toLocaleDateString()}
                   </Typography>
                   <Stack
@@ -105,7 +104,7 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
                     borderRadius={'0.5em'}
                   >
                     <Box>
-                      <Typography variant="h4">
+                      <Typography variant="h4" suppressHydrationWarning>
                         {new Date(flight.depart_date).toLocaleTimeString()}
                       </Typography>
                       <Typography variant="subtitle2">
@@ -120,7 +119,7 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
                       />
                     </Box>
                     <Box>
-                      <Typography variant="h4">
+                      <Typography variant="h4" suppressHydrationWarning>
                         {new Date(flight.arrival_date).toLocaleTimeString()}
                       </Typography>
                       <Typography variant="subtitle2">
@@ -142,7 +141,7 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
           ))
         )}
       </Stack>
-    </Container>
+    </BookingContainer>
   );
 };
 const getFlight = async (
@@ -156,10 +155,7 @@ const getFlight = async (
       {
         origin: departure.name,
         destination: destination.name,
-        depart_date: `${new Date(departureDate).getFullYear()}-${(
-          '0' +
-          (new Date(departureDate).getMonth() + 1)
-        ).slice(-2)}`,
+        depart_date: departureDate,
       }
     );
     return res.data;
@@ -167,26 +163,28 @@ const getFlight = async (
     console.error(e);
   }
 };
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  const { res, query } = context;
+  res.setHeader('Cache-Control', `s-maxage=60, stale-while-revalidate`);
   const allPromises = Promise.all([
     await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport/${query.departure}`
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport/${query.origin}`
     ),
     await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport/${query.arrival}`
+      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport/${query.destination}`
     ),
   ]);
-  const res = await allPromises;
+  const airports = await allPromises;
   const flights = await getFlight(
-    res[0].data,
-    res[1].data,
-    `${query.departureDate}`
+    airports[0].data,
+    airports[1].data,
+    `${query.depart_date}`
   );
   return {
     props: {
-      departure: res[0].data,
-      destination: res[1].data,
-      departureDate: query.departureDate,
+      departure: airports[0].data,
+      destination: airports[1].data,
+      departureDate: query.depart_date,
       flightList: flights.data,
     },
   };

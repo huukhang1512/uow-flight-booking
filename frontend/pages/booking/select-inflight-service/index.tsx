@@ -4,7 +4,7 @@ import { BookingStepper } from '@/components/BookingStepper';
 const SelectSeat = () => {
   return (
     <BookingContainer>
-      <BookingStepper step={1} />
+      <BookingStepper step={2} />
     </BookingContainer>
   );
 };

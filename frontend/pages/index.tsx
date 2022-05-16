@@ -8,7 +8,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import type { GetServerSideProps, NextPage } from 'next';
+import type { GetStaticProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
 import styles from '../styles/Home.module.css';
 import { useState } from 'react';
@@ -19,12 +19,26 @@ import Image from 'next/image';
 import { AirportListAutoComplete } from '@/components/AirportListAutoComplete';
 import { AirPort } from '@/interfaces/airport';
 import axios from 'axios';
+import { useSetRecoilState } from 'recoil';
+import { chosenRoute } from 'atoms/chosenRoute';
 
 interface HomePageProps {
   airports: AirPort[];
 }
 const Home: NextPage<HomePageProps> = ({ ...props }) => {
   const router = useRouter();
+  const setChosenRoute = useSetRecoilState(chosenRoute);
+  const choseRoute = (route: {
+    origin?: string;
+    destination?: string;
+    depart_date: string;
+  }) => {
+    setChosenRoute(route);
+    router.push({
+      pathname: '/booking/select-flight',
+      query: route,
+    });
+  };
   const [ticketType, setTicketType] = useState<TicketType>(TicketType.ONE_WAY);
   const [departureLocation, setDepartureLocation] = useState<AirPort | null>(
     null
@@ -64,7 +78,7 @@ const Home: NextPage<HomePageProps> = ({ ...props }) => {
             padding: '0 1.5em',
           }}
         >
-          Book next your flight with confident
+          Book your next flight with confident
         </Typography>
       </Box>
       <Box
@@ -116,7 +130,7 @@ const Home: NextPage<HomePageProps> = ({ ...props }) => {
                 onChange={(e) => setdepartureDate(e.target.value)}
                 label={'Departure Date'}
                 variant="filled"
-                type="date"
+                type="month"
                 sx={{
                   backgroundColor: '#F5F5F5',
                 }}
@@ -187,13 +201,10 @@ const Home: NextPage<HomePageProps> = ({ ...props }) => {
                 !departureLocation || !arrivalLocation || !departureDate
               }
               onClick={() =>
-                router.push({
-                  pathname: '/booking/select-flight',
-                  query: {
-                    departure: departureLocation?.id,
-                    arrival: arrivalLocation?.id,
-                    departureDate: departureDate,
-                  },
+                choseRoute({
+                  origin: departureLocation?.id,
+                  destination: arrivalLocation?.id,
+                  depart_date: departureDate,
                 })
               }
             >
@@ -206,11 +217,11 @@ const Home: NextPage<HomePageProps> = ({ ...props }) => {
   );
 };
 
-export const getServerSideProps:GetServerSideProps = async () => {
-  const res = await axios.get(
+export const getStaticProps: GetStaticProps = async () => {
+  const airport = await axios.get(
     `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport`
   );
-  const airports = res.data;
+  const airports = airport.data;
   return {
     props: {
       airports,
