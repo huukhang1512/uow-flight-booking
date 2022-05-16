@@ -13,7 +13,7 @@ export const BookingStepper = (props: BookingStepperProps) => {
     {
       label: 'Select Flight',
       stepIndex: 0,
-      path: '/select-flight',
+      path: 'select-flight',
       query: {
         origin: routeChosen.origin,
         destination: routeChosen.destination,
@@ -23,22 +23,22 @@ export const BookingStepper = (props: BookingStepperProps) => {
     {
       label: 'Select Seat',
       stepIndex: 1,
-      path: '/select-seat',
+      path: 'select-seat',
     },
     {
       label: 'Select Inflight Service',
       stepIndex: 2,
-      path: '/select-inflight-service',
+      path: 'select-inflight-service',
     },
     {
       label: 'Booking Details',
       stepIndex: 3,
-      path: '/booking-details',
+      path: 'booking-details',
     },
     {
       label: 'Review Booking and Pay',
       stepIndex: 4,
-      path: '/review-and-pay',
+      path: 'review-and-pay',
     },
   ];
   return (
