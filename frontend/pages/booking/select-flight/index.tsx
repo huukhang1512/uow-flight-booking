@@ -88,8 +88,8 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
                 <FlightListItem
                   arrival_date={flight.arrival_date}
                   depart_date={flight.depart_date}
-                  origin={flight.origin.name}
-                  destination={flight.destination.name}
+                  origin={flight.origin}
+                  destination={flight.destination}
                   price={flight.price}
                 />
               </Button>

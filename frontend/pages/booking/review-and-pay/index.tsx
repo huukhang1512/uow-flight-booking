@@ -4,9 +4,10 @@ import { FlightListItem } from '@/components/FlightListItem';
 import { Payment } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { selectedFlight } from 'atoms/selectedFlight';
+import { NextPage } from 'next';
 import { useRecoilValue } from 'recoil';
 
-const SelectSeat = () => {
+const ReviewAndPay:NextPage = () => {
   const flightChosen = useRecoilValue(selectedFlight);
   return (
     <BookingContainer>
@@ -58,4 +59,4 @@ const SelectSeat = () => {
   );
 };
 
-export default SelectSeat;
+export default ReviewAndPay;

@@ -2,11 +2,12 @@ import { Flight } from '@/interfaces/flight';
 import { Stack, Typography } from '@mui/material';
 import { Flight as FlightIcon } from '@mui/icons-material';
 import { Box } from '@mui/system';
+import { AirPort } from '@/interfaces/airport';
 interface FlightListItemProps {
   depart_date: Flight['depart_date'];
   arrival_date: Flight['arrival_date'];
-  origin: Flight['origin']['name'];
-  destination: Flight['destination']['name'];
+  origin: AirPort['name'];
+  destination: AirPort['name'];
   price: Flight['price'];
 }
 export const FlightListItem = (props: FlightListItemProps) => {

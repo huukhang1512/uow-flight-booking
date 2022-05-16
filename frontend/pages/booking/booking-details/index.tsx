@@ -1,6 +1,5 @@
 import { BookingContainer } from '@/components/BookingContainer';
 import { BookingStepper } from '@/components/BookingStepper';
-import { Box } from '@mui/system';
 
 const BookingDetails = () => {
   return (

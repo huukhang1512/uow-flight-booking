@@ -1,7 +1,7 @@
 import { BookingContainer } from '@/components/BookingContainer';
 import { BookingStepper } from '@/components/BookingStepper';
 
-const SelectSeat = () => {
+const SelectInFlightService = () => {
   return (
     <BookingContainer>
       <BookingStepper step={2} />
@@ -9,4 +9,4 @@ const SelectSeat = () => {
   );
 };
 
-export default SelectSeat;
+export default SelectInFlightService;
