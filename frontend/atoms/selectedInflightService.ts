@@ -1,23 +1,28 @@
+import { InflightService } from '@/interfaces/inflightService';
 import { atom } from 'recoil';
-export const inflightService = atom({
-  key: 'inflightService',
-  default: {
-    services: [
-      {
-        inflightServiceType: 'ENTERTAINMENT',
-        title: 'Entertainment',
-        quantity: 0,
-      },
-      {
-        inflightServiceType: 'WINE_AND_SPIRIT',
-        title: 'Wine & Spirit',
-        quantity: 0,
-      },
-      {
-        inflightServiceType: 'FOOD_AND_BEVERAGE',
-        title: 'Food & Beverage',
-        quantity: 0,
-      },
-    ],
-  },
+import { recoilPersist } from 'recoil-persist'
+const { persistAtom } = recoilPersist()
+export const inflightServices = atom<InflightService[]>({
+  key: 'inflightServices',
+  default: [
+    {
+      inflightServiceType: 'ENTERTAINMENT',
+      title: 'Entertainment',
+      quantity: 0,
+      price: 10,
+    },
+    {
+      inflightServiceType: 'WINE_AND_SPIRIT',
+      title: 'Wine & Spirit',
+      quantity: 0,
+      price: 20,
+    },
+    {
+      inflightServiceType: 'FOOD_AND_BEVERAGE',
+      title: 'Food & Beverage',
+      quantity: 0,
+      price: 15,
+    },
+  ],
+  effects_UNSTABLE: [persistAtom],
 });
