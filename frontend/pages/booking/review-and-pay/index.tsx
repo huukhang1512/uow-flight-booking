@@ -4,11 +4,13 @@ import { FlightListItem } from '@/components/FlightListItem';
 import { Payment } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { selectedFlight } from 'atoms/selectedFlight';
+import { inflightServices } from 'atoms/selectedInflightService';
 import { NextPage } from 'next';
 import { useRecoilValue } from 'recoil';
 
 const ReviewAndPay:NextPage = () => {
   const flightChosen = useRecoilValue(selectedFlight);
+  const services = useRecoilValue(inflightServices);
   return (
     <BookingContainer>
       <BookingStepper step={4} />
