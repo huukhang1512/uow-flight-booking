@@ -1,12 +1,5 @@
 import { BookingStepper } from '@/components/BookingStepper';
-import {
-  Box,
-  Button,
-  Stack,
-  Tab,
-  Tabs,
-  Typography,
-} from '@mui/material';
+import { Box, Button, Stack, Tab, Tabs, Typography } from '@mui/material';
 import { Flight as FlightIcon } from '@mui/icons-material';
 import axios from 'axios';
 import { GetServerSideProps, NextPage } from 'next';
@@ -17,6 +10,7 @@ import { useSetRecoilState } from 'recoil';
 import { selectedFlight } from 'atoms/selectedFlight';
 import { useRouter } from 'next/router';
 import { BookingContainer } from '@/components/BookingContainer';
+import { FlightListItem } from '@/components/FlightListItem';
 interface SelectFlightProps {
   departure: AirPort;
   destination: AirPort;
@@ -91,51 +85,13 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
                   backgroundColor: '#FAFAFA',
                 }}
               >
-                <Stack width="100%" alignItems={'flex-start'}>
-                  <Typography suppressHydrationWarning>
-                    {new Date(flight.depart_date).toLocaleDateString()}
-                  </Typography>
-                  <Stack
-                    direction="row"
-                    justifyContent={'space-between'}
-                    alignItems={'center'}
-                    padding={3}
-                    width="100%"
-                    borderRadius={'0.5em'}
-                  >
-                    <Box>
-                      <Typography variant="h4" suppressHydrationWarning>
-                        {new Date(flight.depart_date).toLocaleTimeString()}
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        {props.departure.name} - Departure
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <FlightIcon
-                        style={{
-                          transform: 'rotate(90deg)',
-                        }}
-                      />
-                    </Box>
-                    <Box>
-                      <Typography variant="h4" suppressHydrationWarning>
-                        {new Date(flight.arrival_date).toLocaleTimeString()}
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        {props.destination.name} - Arival
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="subtitle2">Direct Flight</Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h5" color="#FD7E14">
-                        AUD ${flight.price}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </Stack>
+                <FlightListItem
+                  arrival_date={flight.arrival_date}
+                  depart_date={flight.depart_date}
+                  origin={flight.origin.name}
+                  destination={flight.destination.name}
+                  price={flight.price}
+                />
               </Button>
             </React.Fragment>
           ))
