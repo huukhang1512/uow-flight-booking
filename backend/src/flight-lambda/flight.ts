@@ -16,7 +16,7 @@ export const getFlights = async (
     };
 
     const headers = {
-      "X-Access-Token":  process.env.TRAVEL_PAYOUT_ACCESS_TOKEN || "",
+      "X-Access-Token": process.env.TRAVEL_PAYOUT_ACCESS_TOKEN || "",
       "X-RapidAPI-Host":
         "travelpayouts-travelpayouts-flight-data-v1.p.rapidapi.com",
       "X-RapidAPI-Key": process.env.TRAVEL_PAYOUT_API_KEY || "",
@@ -29,9 +29,6 @@ export const getFlights = async (
     const data = res.data.prices;
 
     return {
-      headers: {
-        "Access-Control-Allow-Origin": "http://localhost:3000"
-      },
       body: JSON.stringify({
         data: data.map((flight: Flight, i: number) => ({
           id: i,
@@ -49,6 +46,7 @@ export const getFlights = async (
     };
   } catch (e) {
     return {
+      headers: { "Access-Control-Allow-Origin": "*" },
       body: JSON.stringify(e),
       statusCode: 400,
     };

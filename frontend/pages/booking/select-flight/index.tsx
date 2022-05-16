@@ -2,44 +2,101 @@ import { BookingStepper } from '@/components/BookingStepper';
 import {
   Box,
   Button,
+  CircularProgress,
   Container,
-  IconButton,
   Stack,
   Tab,
   Tabs,
+  TextField,
   Typography,
 } from '@mui/material';
 import { Flight as FlightIcon } from '@mui/icons-material';
 import axios from 'axios';
-import { GetServerSideProps, NextPage } from 'next';
+import { NextPage } from 'next';
 import { AirPort } from '@/interfaces/airport';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Flight } from '@/interfaces/flight';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { selectedFlight } from 'atoms/selectedFlight';
+import { useRouter } from 'next/router';
+import { BookingContainer } from '@/components/BookingContainer';
+import { FlightListItem } from '@/components/FlightListItem';
+import { chosenRoute } from 'atoms/chosenRoute';
 
-interface SelectFlightProps {
-  departure: AirPort;
-  destination: AirPort;
-  departureDate: string;
-  flightList: Flight[];
-}
-const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
+const SelectFlight: NextPage = () => {
+  const router = useRouter();
+  const setSelectedFlight = useSetRecoilState(selectedFlight);
+  const [routeChosen, setRouteChosen] = useRecoilState(chosenRoute);
+  const [origin, setOrigin] = useState<AirPort>();
+  const [destination, setDestination] = useState<AirPort>();
+  const [flightList, setFlightList] = useState<Flight[]>();
+  const [loading, setLoading] = useState(true);
+
+  const chooseFlight = (flight: Flight) => {
+    setSelectedFlight(flight);
+    router.push({
+      pathname: '/booking/select-seat',
+    });
+  };
+  const changeDepartureMonth = (e: ChangeEvent<HTMLInputElement>) => {
+    setRouteChosen({ ...routeChosen, depart_date: e.target.value });
+    router.query.depart_date = e.target.value;
+    router.push(router);
+  };
+
+  const getFlightAndAirportDetails = async () => {
+    try {
+      setLoading(true);
+      const allPromises = Promise.all([
+        await axios.get(`/api/airport/${router.query.origin}`),
+        await axios.get(`/api/airport/${router.query.destination}`),
+      ]);
+      const airports = await allPromises;
+      setOrigin(airports[0].data);
+      setDestination(airports[1].data);
+
+      const flight = await axios.post(`/api/flight`, {
+        data: {
+          origin: airports[0].data.name,
+          destination: airports[1].data.name,
+          depart_date: router.query.depart_date,
+        },
+      });
+      setFlightList(flight.data);
+      setLoading(false);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  useEffect(() => {
+    if (!router.isReady) return;
+    getFlightAndAirportDetails();
+  }, [router.isReady, router.query.depart_date]);
+
+  if (loading) {
+    return (
+      <Container
+        sx={{
+          flexDirection: 'column',
+          padding: 3,
+          minHeight: '90vh',
+          alignItems: 'center',
+          justifyContent: 'center',
+          direction: 'column',
+          display: 'flex',
+          gap: 4,
+        }}
+        maxWidth="lg"
+      >
+        <CircularProgress />
+      </Container>
+    );
+  }
   return (
-    <Container
-      sx={{
-        flexDirection: 'column',
-        padding: 3,
-        minHeight: '90vh',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        direction: 'column',
-        display: 'flex',
-        gap: 4,
-      }}
-      maxWidth="lg"
-    >
+    <BookingContainer>
       <BookingStepper step={0} />
       <Typography variant={'h1'} fontWeight={'medium'} sx={{ fontSize: '3em' }}>
-        {props.departure.city.name} To {props.destination.city.name}
+        {origin?.city.name} To {destination?.city.name}
       </Typography>
       <Typography variant={'subtitle1'}>
         The fares include 7kg carry-on baggage. You can buy more in the next
@@ -59,18 +116,38 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
           Departing Flight
         </Typography>
         <Stack spacing={1} alignItems={'center'} direction="row" width={'100%'}>
-          <FlightIcon
-            style={{
-              color: '#4066B0',
-              transform: 'rotate(90deg)',
-            }}
-          />
-          <Typography variant={'body1'}>
-            {props.departure.city.name} to {props.destination.city.name} -{' '}
-            Flight available at{' '}
-            {('0' + (new Date(props.departureDate).getMonth() + 1)).slice(-2)}/
-            {new Date(props.departureDate).getFullYear()}
-          </Typography>
+          <Stack
+            direction="row"
+            alignItems="center"
+            justifyContent={'space-between'}
+            width={'100%'}
+          >
+            <Stack direction="row" alignItems="center" spacing={1}>
+              <FlightIcon
+                style={{
+                  color: '#4066B0',
+                  transform: 'rotate(90deg)',
+                }}
+              />
+              <Typography variant={'body1'}>
+                {origin?.city.name} to {destination?.city.name} - Flight
+                available at {routeChosen.depart_date}
+              </Typography>
+            </Stack>
+            <TextField
+              value={routeChosen.depart_date}
+              onChange={changeDepartureMonth}
+              size="small"
+              label={'Change Departure Month'}
+              type="month"
+              sx={{
+                backgroundColor: '#F5F5F5',
+              }}
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Stack>
         </Stack>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={0} aria-label="flight-class">
@@ -79,117 +156,36 @@ const SelectFlight: NextPage<SelectFlightProps> = ({ ...props }) => {
             <Tab label="First Class" disabled />
           </Tabs>
         </Box>
-        {props.flightList.length == 0 ? (
+        {flightList?.length == 0 ? (
           <Typography>No flight found this month!</Typography>
         ) : (
-          props.flightList.map((flight, i) => (
+          flightList?.map((flight, i) => (
             <React.Fragment key={i}>
               <Button
                 variant="contained"
                 fullWidth
+                onClick={() => {
+                  chooseFlight(flight);
+                }}
                 style={{
                   color: '#555555',
                   backgroundColor: '#FAFAFA',
                 }}
               >
-                <Stack width="100%" alignItems={'flex-start'}>
-                  <Typography>
-                    {new Date(flight.depart_date).toLocaleDateString()}
-                  </Typography>
-                  <Stack
-                    direction="row"
-                    justifyContent={'space-between'}
-                    alignItems={'center'}
-                    padding={3}
-                    width="100%"
-                    borderRadius={'0.5em'}
-                  >
-                    <Box>
-                      <Typography variant="h4">
-                        {new Date(flight.depart_date).toLocaleTimeString()}
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        {props.departure.name} - Departure
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <FlightIcon
-                        style={{
-                          transform: 'rotate(90deg)',
-                        }}
-                      />
-                    </Box>
-                    <Box>
-                      <Typography variant="h4">
-                        {new Date(flight.arrival_date).toLocaleTimeString()}
-                      </Typography>
-                      <Typography variant="subtitle2">
-                        {props.destination.name} - Arival
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="subtitle2">Direct Flight</Typography>
-                    </Box>
-                    <Box>
-                      <Typography variant="h5" color="#FD7E14">
-                        AUD ${flight.price}
-                      </Typography>
-                    </Box>
-                  </Stack>
-                </Stack>
+                <FlightListItem
+                  arrival_date={flight.arrival_date}
+                  depart_date={flight.depart_date}
+                  origin={flight.origin}
+                  destination={flight.destination}
+                  price={flight.price}
+                />
               </Button>
             </React.Fragment>
           ))
         )}
       </Stack>
-    </Container>
+    </BookingContainer>
   );
-};
-const getFlight = async (
-  departure: AirPort,
-  destination: AirPort,
-  departureDate: string
-) => {
-  try {
-    const res = await axios.post(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/flight`,
-      {
-        origin: departure.name,
-        destination: destination.name,
-        depart_date: `${new Date(departureDate).getFullYear()}-${(
-          '0' +
-          (new Date(departureDate).getMonth() + 1)
-        ).slice(-2)}`,
-      }
-    );
-    return res.data;
-  } catch (e) {
-    console.error(e);
-  }
-};
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const allPromises = Promise.all([
-    await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport/${query.departure}`
-    ),
-    await axios.get(
-      `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/airport/${query.arrival}`
-    ),
-  ]);
-  const res = await allPromises;
-  const flights = await getFlight(
-    res[0].data,
-    res[1].data,
-    `${query.departureDate}`
-  );
-  return {
-    props: {
-      departure: res[0].data,
-      destination: res[1].data,
-      departureDate: query.departureDate,
-      flightList: flights.data,
-    },
-  };
 };
 
 export default SelectFlight;

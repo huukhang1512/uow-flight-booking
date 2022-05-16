@@ -1,13 +1,12 @@
 import { BookingContainer } from '@/components/BookingContainer';
 import { BookingStepper } from '@/components/BookingStepper';
-import { NextPage } from 'next';
 
-const SelectSeat:NextPage = () => {
+const SelectInFlightService = () => {
   return (
     <BookingContainer>
-      <BookingStepper step={1} />
+      <BookingStepper step={2} />
     </BookingContainer>
   );
 };
 
-export default SelectSeat;
+export default SelectInFlightService;
