@@ -65,7 +65,7 @@ const SelectInFlightService = () => {
   return (
     <BookingContainer>
       <BookingStepper step={2} />
-      <Typography color={'#FD7E14'} variant={'h4'}>
+      <Typography color={'#FD7E14'} variant={'h4'} >
         Make it your unique experience
       </Typography>
       <Stack direction="column" spacing={3}>
