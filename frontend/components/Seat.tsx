@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from "@mui/material"
-import { ISeat } from './index'
+import { ISeat } from '@/interfaces/seat'
 import CheckIcon from '@mui/icons-material/Check';
 
 type Props = {

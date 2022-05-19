@@ -6,15 +6,10 @@ import { useRouter } from 'next/router';
 import { Button, Stack, Grid, Typography } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import Image from 'next/image';
-import { Seat } from './Seat'
+import { Seat } from '../../../components/Seat'
 import airplane from '../../../public/airplane.png';
 import { toast } from 'react-toastify'
-export interface ISeat {
-  sold: boolean,
-  row: number,
-  column: "A" | "B" | "C" | "D"
-}
-
+import { ISeat } from '@/interfaces/seat'
 const genRandomSold = () => {
   const num = Math.random();
   if (num < 0.3) return true;  //probability 0.3
