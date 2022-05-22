@@ -3,13 +3,13 @@ import { BookingContainer } from '@/components/BookingContainer';
 import { BookingStepper } from '@/components/BookingStepper';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import { Button, Stack, Grid, Typography } from '@mui/material';
+import { Button, Stack, Grid, Typography, Snackbar, Alert } from '@mui/material';
 import { ArrowForward } from '@mui/icons-material';
 import Image from 'next/image';
 import { Seat } from '../../../components/Seat'
 import airplane from '../../../public/airplane.png';
-import { toast } from 'react-toastify'
 import { ISeat } from '@/interfaces/seat'
+
 const genRandomSold = () => {
   const num = Math.random();
   if (num < 0.3) return true;  //probability 0.3
@@ -44,14 +44,17 @@ const genRandomSeat = (): ISeat[] => {
 }
 
 const SelectSeat:NextPage = () => {
+  const [open, setOpen] = useState(false);
   const [allSeats, setAllSeats] = useState<ISeat[]>([])
-  useEffect(() => {
-
-    setAllSeats(genRandomSeat())
-  }, [])
   const [selectedSeat, setSelectedSeat] = useState<ISeat | undefined>(undefined)
   const router = useRouter();
 
+  useEffect(() => {
+    setAllSeats(genRandomSeat())
+  }, [])
+  const handleSnackBarClose = () => {
+    setOpen(false);
+  }
   const isSelected = (seat: ISeat): boolean => {
     return seat.row === selectedSeat?.row && seat.column === selectedSeat?.column
   }
@@ -63,7 +66,7 @@ const SelectSeat:NextPage = () => {
     const seatD = seats.filter(seat => seat.column == "D")
 
     return seatA.map((sA: ISeat, index: number) => {
-      return (<>
+      return (<React.Fragment key={index}>
         <Grid item container justifyContent={"center"} alignItems={"center"} xs={1}>
           <Typography variant={'h5'} component={'h4'} >
             {index + 1}
@@ -87,7 +90,7 @@ const SelectSeat:NextPage = () => {
             <Seat seat={seatD[index]} selected={isSelected(seatD[index])} changeSelectedSeat={changeSelectedSeat} />
           </Grid>
         </Grid>
-      </>)
+        </React.Fragment>)
     })
   }
 
@@ -102,13 +105,17 @@ const SelectSeat:NextPage = () => {
     if (selectedSeat) {
       router.push('/booking/select-inflight-service')
     } else {
-      console.log('warn')
-      toast.warn("Please select a seat before moving on")
+      setOpen(true)
     }
   }
 
   return (
     <BookingContainer>
+      <Snackbar open={open} autoHideDuration={4000} onClose={handleSnackBarClose}>
+        <Alert onClose={handleSnackBarClose} severity="warning" sx={{ width: '100%' }}>
+          Please select a seat before moving on
+        </Alert>
+      </Snackbar>
       <BookingStepper step={1} />
       <Grid container spacing={3}>
         <Grid item xs={12}>

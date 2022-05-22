@@ -4,8 +4,6 @@ import styles from '../styles/Home.module.css';
 import { NavigationBar } from '@/components/NavigationBar';
 import Head from 'next/head';
 import { RecoilRoot } from 'recoil';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -21,7 +19,6 @@ function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <NavigationBar />
-      <ToastContainer />
       <div className={styles.main}>
         <Component {...pageProps} />
       </div>

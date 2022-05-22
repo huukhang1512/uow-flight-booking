@@ -2,8 +2,8 @@ import { BookingContainer } from '@/components/BookingContainer';
 import { BookingStepper } from '@/components/BookingStepper';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { Button, Grid, Stack, TextField, Typography } from '@mui/material'
-import React from 'react'
+import { Button, Grid, Stack, TextField, Typography } from '@mui/material';
+import React from 'react';
 import { ArrowForward } from '@mui/icons-material';
 import { useRouter } from 'next/router';
 
@@ -14,7 +14,7 @@ const initialValues = {
   address: '',
   suburb: '',
   state: '',
-}
+};
 
 export const bookingDetailsSchema = Yup.object().shape({
   email: Yup.string()
@@ -25,31 +25,30 @@ export const bookingDetailsSchema = Yup.object().shape({
   lastName: Yup.string().required('Please enter your last name'),
   address: Yup.string().required('Please enter your address'),
   suburb: Yup.string().required('Please enter your suburb'),
-  state: Yup.string().required('Please enter your state')
-})
+  state: Yup.string().required('Please enter your state'),
+});
 
 const BookingDetails = () => {
-
   const router = useRouter();
 
   const formik = useFormik({
     initialValues,
     validationSchema: bookingDetailsSchema,
     onSubmit: async (values) => {
-      router.push('/booking/review-and-pay')
-    }
-  })
+      router.push('/booking/review-and-pay');
+    },
+  });
 
   const onNext = () => {
     formik.submitForm();
-  }
+  };
 
   return (
     <BookingContainer>
       <BookingStepper step={3} />
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Typography color={'#FD7E14'} variant={'h4'} textAlign={"center"}>
+          <Typography color={'#FD7E14'} variant={'h4'} textAlign={'center'}>
             Booking Details
           </Typography>
         </Grid>
@@ -70,14 +69,17 @@ const BookingDetails = () => {
                   type="email"
                   value={formik.values.email}
                 />
-              </Grid >
+              </Grid>
               <Grid item xs={12} md={6}>
-
                 <TextField
                   autoFocus
-                  error={Boolean(formik.touched.firstName && formik.errors.firstName)}
+                  error={Boolean(
+                    formik.touched.firstName && formik.errors.firstName
+                  )}
                   fullWidth
-                  helperText={formik.touched.firstName && formik.errors.firstName}
+                  helperText={
+                    formik.touched.firstName && formik.errors.firstName
+                  }
                   label="First Name"
                   margin="normal"
                   name="firstName"
@@ -86,11 +88,13 @@ const BookingDetails = () => {
                   type="text"
                   value={formik.values.firstName}
                 />
-              </Grid >
+              </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
                   autoFocus
-                  error={Boolean(formik.touched.lastName && formik.errors.lastName)}
+                  error={Boolean(
+                    formik.touched.lastName && formik.errors.lastName
+                  )}
                   fullWidth
                   helperText={formik.touched.lastName && formik.errors.lastName}
                   label="Last Name"
@@ -101,11 +105,13 @@ const BookingDetails = () => {
                   type="text"
                   value={formik.values.lastName}
                 />
-              </Grid >
+              </Grid>
               <Grid item xs={12}>
                 <TextField
                   autoFocus
-                  error={Boolean(formik.touched.address && formik.errors.address)}
+                  error={Boolean(
+                    formik.touched.address && formik.errors.address
+                  )}
                   fullWidth
                   helperText={formik.touched.address && formik.errors.address}
                   label="Address"
@@ -131,7 +137,7 @@ const BookingDetails = () => {
                   type="text"
                   value={formik.values.suburb}
                 />
-              </Grid >
+              </Grid>
               <Grid item xs={12} md={6}>
                 <TextField
                   autoFocus
@@ -149,8 +155,8 @@ const BookingDetails = () => {
               </Grid>
             </Grid>
           </form>
-        </Grid >
-      </Grid >
+        </Grid>
+      </Grid>
       <Stack width="100%" alignItems="flex-end">
         <Button
           variant="contained"
@@ -165,7 +171,6 @@ const BookingDetails = () => {
         </Button>
       </Stack>
     </BookingContainer>
-
   );
 };
 
