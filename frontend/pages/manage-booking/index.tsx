@@ -24,12 +24,15 @@ const ManageBooking: NextPage = () => {
     <BookingContainer>
       <Typography variant={'h4'}>List of your bookings:</Typography>
       {bookingLists.length === 0 && (
-        <Typography variant={'subtitle1'}>Your booked flights will be shown here</Typography>
+        <Typography variant={'subtitle1'}>
+          Your booked flights will be shown here
+        </Typography>
       )}
       {bookingLists.map(
-        (booking: typeof bookingLists.bookings[0], index: number) => {
+        (booking: typeof bookingLists.bookings[0], i: number) => {
           return (
             <Stack
+              key={i}
               width={'100%'}
               boxShadow={`4px 5px 2px 1px #555555`}
               border={'1px solid #555555'}
@@ -41,7 +44,6 @@ const ManageBooking: NextPage = () => {
               divider={<Divider />}
             >
               <FlightListItem
-                key={index}
                 arrival_date={booking.selectedFlight.arrival_date}
                 depart_date={booking.selectedFlight.depart_date}
                 origin={booking.selectedFlight.origin}
