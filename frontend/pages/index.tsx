@@ -29,6 +29,7 @@ const Home: NextPage<HomePageProps> = ({ ...props }) => {
   const router = useRouter();
   const setChosenRoute = useSetRecoilState(chosenRoute);
   const choseRoute = (route: {
+    numOfPassengers: number;
     origin?: string;
     destination?: string;
     depart_date: string;
@@ -205,6 +206,7 @@ const Home: NextPage<HomePageProps> = ({ ...props }) => {
                   origin: departureLocation?.id,
                   destination: arrivalLocation?.id,
                   depart_date: departureDate,
+                  numOfPassengers: numOfPassengers
                 })
               }
             >

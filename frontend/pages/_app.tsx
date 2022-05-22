@@ -4,6 +4,8 @@ import styles from '../styles/Home.module.css';
 import { NavigationBar } from '@/components/NavigationBar';
 import Head from 'next/head';
 import { RecoilRoot } from 'recoil';
+
+
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <RecoilRoot>

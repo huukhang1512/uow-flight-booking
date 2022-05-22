@@ -6,7 +6,7 @@ import { Button, Stack, TextField, Typography } from '@mui/material';
 import { inflightServices } from 'atoms/selectedInflightService';
 import { useRouter } from 'next/router';
 import { ChangeEvent } from 'react';
-import { useRecoilState, useRecoilValueLoadable } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 const SelectInFlightService = () => {
   const router = useRouter();
@@ -58,6 +58,11 @@ const SelectInFlightService = () => {
           size={'small'}
           onChange={(e) => handleChangeInflightServices(e, index)}
           style={{ width: '15%' }}
+          InputProps={{
+            inputProps: {
+              min: 0,
+            },
+          }}
         />
       </Stack>
     );
