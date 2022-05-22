@@ -37,6 +37,7 @@ export const NavigationBar = () => {
               <Button
                 key={i}
                 size="large"
+                onClick={() => {router.push(route.key)}}
                 style={{ textTransform: 'none', color: '#003448' }}
                 startIcon={route.icon}
               >
