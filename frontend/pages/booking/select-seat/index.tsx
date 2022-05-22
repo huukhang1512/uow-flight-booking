@@ -9,45 +9,49 @@ import Image from 'next/image';
 import { Seat } from '../../../components/Seat'
 import airplane from '../../../public/airplane.png';
 import { ISeat } from '@/interfaces/seat'
-
-const genRandomSold = () => {
-  const num = Math.random();
-  if (num < 0.3) return true;  //probability 0.3
-  else return false; // probability 0.7
-}
-
-const genRandomSeat = (): ISeat[] => {
-  const seats: ISeat[] = []
-  for (let i = 1; i < 7; i++) {
-    seats.push({
-      sold: genRandomSold(),
-      row: i,
-      column: "A"
-    })
-    seats.push({
-      sold: genRandomSold(),
-      row: i,
-      column: "B"
-    })
-    seats.push({
-      sold: genRandomSold(),
-      row: i,
-      column: "C"
-    })
-    seats.push({
-      sold: genRandomSold(),
-      row: i,
-      column: "D"
-    })
-  }
-  return seats
-}
+import { useRecoilState } from 'recoil';
+import { seat } from 'atoms/selectedSeat';
 
 const SelectSeat:NextPage = () => {
   const [open, setOpen] = useState(false);
   const [allSeats, setAllSeats] = useState<ISeat[]>([])
-  const [selectedSeat, setSelectedSeat] = useState<ISeat | undefined>(undefined)
+  const [selectedSeat, setSelectedSeat] = useRecoilState<ISeat>(seat)
   const router = useRouter();
+
+  const genRandomSold = (i:number, column: "A" | "B" | "C" | "D") => {
+    if(selectedSeat.row === i && selectedSeat.column === column)
+      return false;
+    const num = Math.random();
+    if (num < 0.3) return true;  //probability 0.3
+    else return false; // probability 0.7
+  }
+  
+  const genRandomSeat = (): ISeat[] => {
+    const seats: ISeat[] = []
+    for (let i = 1; i < 7; i++) {
+      seats.push({
+        sold: genRandomSold(i,"A"),
+        row: i,
+        column: "A"
+      })
+      seats.push({
+        sold: genRandomSold(i,"B"),
+        row: i,
+        column: "B"
+      })
+      seats.push({
+        sold: genRandomSold(i,"C"),
+        row: i,
+        column: "C"
+      })
+      seats.push({
+        sold: genRandomSold(i,"D"),
+        row: i,
+        column: "D"
+      })
+    }
+    return seats
+  }
 
   useEffect(() => {
     setAllSeats(genRandomSeat())
@@ -60,13 +64,14 @@ const SelectSeat:NextPage = () => {
   }
 
   const genSeatSelect = (seats: ISeat[]) => {
-    const seatA = seats.filter(seat => seat.column == "A")
-    const seatB = seats.filter(seat => seat.column == "B")
-    const seatC = seats.filter(seat => seat.column == "C")
-    const seatD = seats.filter(seat => seat.column == "D")
+    const seatA = seats.filter(seat => seat.column === "A")
+    const seatB = seats.filter(seat => seat.column === "B")
+    const seatC = seats.filter(seat => seat.column === "C")
+    const seatD = seats.filter(seat => seat.column === "D")
 
     return seatA.map((sA: ISeat, index: number) => {
-      return (<React.Fragment key={index}>
+      return (
+      <React.Fragment key={index}>
         <Grid item container justifyContent={"center"} alignItems={"center"} xs={1}>
           <Typography variant={'h5'} component={'h4'} >
             {index + 1}
@@ -90,7 +95,8 @@ const SelectSeat:NextPage = () => {
             <Seat seat={seatD[index]} selected={isSelected(seatD[index])} changeSelectedSeat={changeSelectedSeat} />
           </Grid>
         </Grid>
-        </React.Fragment>)
+        </React.Fragment>
+      )
     })
   }
 

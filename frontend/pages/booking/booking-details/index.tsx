@@ -6,15 +6,9 @@ import { Button, Grid, Stack, TextField, Typography } from '@mui/material';
 import React from 'react';
 import { ArrowForward } from '@mui/icons-material';
 import { useRouter } from 'next/router';
-
-const initialValues = {
-  email: '',
-  firstName: '',
-  lastName: '',
-  address: '',
-  suburb: '',
-  state: '',
-};
+import { useRecoilState } from 'recoil';
+import { bookingDetails } from 'atoms/bookingDetails';
+import { BookingDetails } from '@/interfaces/bookingDetails';
 
 export const bookingDetailsSchema = Yup.object().shape({
   email: Yup.string()
@@ -29,12 +23,15 @@ export const bookingDetailsSchema = Yup.object().shape({
 });
 
 const BookingDetails = () => {
+  const [bookingData, setBookingDetails] = useRecoilState(bookingDetails);
   const router = useRouter();
 
-  const formik = useFormik({
+  const initialValues = {...bookingData};
+  const formik = useFormik<BookingDetails>({
     initialValues,
     validationSchema: bookingDetailsSchema,
     onSubmit: async (values) => {
+      setBookingDetails(values)
       router.push('/booking/review-and-pay');
     },
   });
@@ -68,6 +65,7 @@ const BookingDetails = () => {
                   onChange={formik.handleChange}
                   type="email"
                   value={formik.values.email}
+                  InputLabelProps={{ shrink: true }}  
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -87,6 +85,7 @@ const BookingDetails = () => {
                   onChange={formik.handleChange}
                   type="text"
                   value={formik.values.firstName}
+                  InputLabelProps={{ shrink: true }}  
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -104,6 +103,7 @@ const BookingDetails = () => {
                   onChange={formik.handleChange}
                   type="text"
                   value={formik.values.lastName}
+                  InputLabelProps={{ shrink: true }}  
                 />
               </Grid>
               <Grid item xs={12}>
@@ -121,6 +121,7 @@ const BookingDetails = () => {
                   onChange={formik.handleChange}
                   type="text"
                   value={formik.values.address}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -136,6 +137,7 @@ const BookingDetails = () => {
                   onChange={formik.handleChange}
                   type="text"
                   value={formik.values.suburb}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -151,6 +153,7 @@ const BookingDetails = () => {
                   onChange={formik.handleChange}
                   type="text"
                   value={formik.values.state}
+                  InputLabelProps={{ shrink: true }}
                 />
               </Grid>
             </Grid>

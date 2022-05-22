@@ -6,7 +6,7 @@ import { Button, Stack, TextField, Typography } from '@mui/material';
 import { inflightServices } from 'atoms/selectedInflightService';
 import { useRouter } from 'next/router';
 import { ChangeEvent } from 'react';
-import { useRecoilState, useRecoilValueLoadable } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 const SelectInFlightService = () => {
   const router = useRouter();
@@ -58,6 +58,11 @@ const SelectInFlightService = () => {
           size={'small'}
           onChange={(e) => handleChangeInflightServices(e, index)}
           style={{ width: '15%' }}
+          InputProps={{
+            inputProps: {
+              min: 0,
+            },
+          }}
         />
       </Stack>
     );
@@ -65,7 +70,7 @@ const SelectInFlightService = () => {
   return (
     <BookingContainer>
       <BookingStepper step={2} />
-      <Typography color={'#FD7E14'} variant={'h4'} >
+      <Typography color={'#FD7E14'} variant={'h4'}>
         Make it your unique experience
       </Typography>
       <Stack direction="column" spacing={3}>

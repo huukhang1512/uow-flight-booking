@@ -15,7 +15,11 @@ export const NavigationBar = () => {
       key: '/',
       icon: <FlightOutlined style={{ transform: 'rotate(90deg)' }} />,
     },
-    { title: 'Manage Booking', key: '/', icon: <MenuBookOutlined /> },
+    {
+      title: 'Manage Booking',
+      key: '/manage-booking',
+      icon: <MenuBookOutlined />,
+    },
     { title: 'Check-in', key: '/', icon: <CheckBoxOutlined /> },
   ];
   return (
